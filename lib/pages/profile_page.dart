@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../data/dummy_data.dart';
 import '../models/models.dart';
@@ -15,30 +16,20 @@ class _ProfilePageState extends State<ProfilePage> {
   Profile _profile = defaultProfile;
 
   void _openProjectDetail(Project project) {
-    Navigator.pushNamed(
-      context,
-      AppRoutes.projectDetail,
-      arguments: project,
-    );
+    context.push(AppRoutes.projectDetail(project.id));
   }
 
   Future<void> _openEditProfile() async {
-    final result = await Navigator.pushNamed(
-      context,
+    final result = await context.push<Profile>(
       AppRoutes.editProfile,
-      arguments: _profile,
+      extra: _profile,
     );
-
-    if (!mounted || result is! Profile) return;
+    if (!mounted || result == null) return;
     setState(() => _profile = result);
   }
 
   void _logout() {
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      AppRoutes.splash,
-      (route) => false,
-    );
+    context.go(AppRoutes.splash);
   }
 
   @override
